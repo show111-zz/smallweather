@@ -11,17 +11,17 @@ public class SmallWeatherOpenHelper extends SQLiteOpenHelper{
     /*
     * province 表建表语句
     * */
-    public static final String CREATE_PROVINCE = "create table province(id integer primary key autoIncrement,province_name text,province_code text)";
+    public static final String CREATE_PROVINCE = "create table province(id integer primary key autoIncrement,province_code text,province_name text)";
 
     /*
     * city表建表语句
     * */
-    public static final String CREATE_CITY = "create table city(id integer primary key autoincrement,city_name text,city_code text,province_id integer)";
+    public static final String CREATE_CITY = "create table city(id integer primary key autoincrement,city_code text,city_name text,province_id integer)";
 
     /*
     * country表建表语句
     * */
-    public static final String CREATE_COUNTRY = "create table country(id integer primary key autoincrement,country_name text,country_code text,city_id integer)";
+    public static final String CREATE_COUNTRY = "create table country(id integer primary key autoincrement,country_code text,country_name text,city_id integer)";
 
 
     public SmallWeatherOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

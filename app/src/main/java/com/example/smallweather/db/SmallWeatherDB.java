@@ -1,11 +1,13 @@
-package com.example.smallweather.model;
+package com.example.smallweather.db;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.smallweather.db.SmallWeatherOpenHelper;
+import com.example.smallweather.model.City;
+import com.example.smallweather.model.Country;
+import com.example.smallweather.model.Province;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +53,8 @@ public class SmallWeatherDB {
     public void saveProvince(Province province){
         if(province != null){
             ContentValues values = new ContentValues();
-            values.put("province_name",province.getProviceName());
             values.put("province_code",province.getProviceCode());
+            values.put("province_name",province.getProviceName());
             db.insert("province",null,values);
         }
     }
@@ -67,8 +69,8 @@ public class SmallWeatherDB {
             do {
                 Province province = new Province();
                 province.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                province.setProviceName(cursor.getString(cursor.getColumnIndex("province_name")));
                 province.setProviceCode(cursor.getString(cursor.getColumnIndex("province_code")));
+                province.setProviceName(cursor.getString(cursor.getColumnIndex("province_name")));
                 list.add(province);
             }while(cursor.moveToNext());
         }
@@ -81,8 +83,8 @@ public class SmallWeatherDB {
     public void saveCity(City city){
         if(city != null){
             ContentValues values = new ContentValues();
-            values.put("city_name",city.getCityName());
             values.put("city_code",city.getCityCode());
+            values.put("city_name",city.getCityName());
             values.put("province_id",city.getProvinceId());
             db.insert("city",null,values);
         }
@@ -93,12 +95,13 @@ public class SmallWeatherDB {
     * */
     public List<City> loadCity(int proviceId){
         List<City> list = new ArrayList<City>();
-        Cursor cursor = db.query("city",null,"where province_id = ?",new String[]{String.valueOf(proviceId)},null,null,null);
+        Cursor cursor = db.query("city",null,"province_id = ?",new String[]{String.valueOf(proviceId)},null,null,null);
         if(cursor.moveToFirst()){
             do {
                 City city = new City();
-                city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
+                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
+                city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
                 city.setProvinceId(proviceId);
                 list.add(city);
             }while (cursor.moveToNext());
@@ -112,8 +115,8 @@ public class SmallWeatherDB {
     public void saveCountry(Country country){
         if(country != null){
             ContentValues values = new ContentValues();
-            values.put("country_name",country.getCountryName());
             values.put("country_code",country.getCountryCode());
+            values.put("country_name",country.getCountryName());
             values.put("city_id",country.getCityId());
             db.insert("country",null,values);
         }
@@ -124,14 +127,15 @@ public class SmallWeatherDB {
     * */
     public List<Country> loadCountry(int cityId){
         List<Country> list = new ArrayList<Country>();
-        Cursor cursor = db.query("country",null,"where city_id = ?",new String[]{String.valueOf(cityId)},null,null,null);
+        Cursor cursor = db.query("country",null,"city_id = ?",new String[]{String.valueOf(cityId)},null,null,null);
 
         if(cursor.moveToFirst()){
             do{
                 Country country = new Country();
-                country.setCityId(cityId);
+                country.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 country.setCountryCode(cursor.getString(cursor.getColumnIndex("country_code")));
                 country.setCountryName(cursor.getString(cursor.getColumnIndex("country_name")));
+                country.setCityId(cityId);
                 list.add(country);
             }while(cursor.moveToNext());
         }
