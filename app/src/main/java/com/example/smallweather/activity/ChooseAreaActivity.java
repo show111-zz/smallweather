@@ -2,7 +2,10 @@ package com.example.smallweather.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -41,19 +44,32 @@ public class ChooseAreaActivity extends Activity{
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<String>();
 
-    private List<Province> provinceList;//Ê¡ÁĞ±í
-    private List<City> cityList;//ÊĞÁĞ±í
-    private List<Country> countryList;//ÏØÁĞ±í
+    private List<Province> provinceList;//çœåˆ—è¡¨
+    private List<City> cityList;//å¸‚åˆ—è¡¨
+    private List<Country> countryList;//å¿åˆ—è¡¨
 
-    private Province selectedProvince;//Ñ¡ÖĞµÄÊ¡
-    private City selectedCity;//Ñ¡ÖĞµÄÊĞ
-    private Country selectedCountry;//Ñ¡ÖĞµÄÏØ
+    private Province selectedProvince;//é€‰ä¸­çš„çœä»½
+    private City selectedCity;//é€‰ä¸­çš„åŸå¸‚
+    private Country selectedCountry;//é€‰ä¸­çš„åŸå¸‚
 
-    private int currentLevel;//µ±Ç°Ñ¡ÖĞµÄ¼¶±ğ
+    private int currentLevel;//å½“å‰é€‰ä¸­çš„çº§åˆ«
+    /**
+     * æ˜¯å¦ä»WeatherActivityä¸­è·³è½¬è¿‡æ¥ã€‚
+     */
+    private boolean isFromWeatherActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if(prefs.getBoolean("city_selected",false)&&!isFromWeatherActivity){
+            Intent intent = new Intent(this,WeahterActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
         titleText = (TextView) findViewById(R.id.title_tv);
@@ -70,15 +86,21 @@ public class ChooseAreaActivity extends Activity{
                 }else if(currentLevel == LEVEL_CITY){
                     selectedCity = cityList.get(i);
                     queryCountry();
+                }else if(currentLevel == LEVEL_COUNTRY){
+                    String countryCode = countryList.get(i).getCountryCode();
+                    Intent intent = new Intent(ChooseAreaActivity.this,WeahterActivity.class);
+                    intent.putExtra("country_code",countryCode);
+                    startActivity(intent);
+                    finish();
                 }
             }
         });
         queryProvinces();
     }
 
-    /*
-    * ²éÑ¯ËùÓĞµÄÊ¡·İ£¬ÓÅÏÈ´ÓÊı¾İ¿âÖĞ²é£¬Èç¹ûÃ»ÓĞ´Ó·şÎñÆ÷ÖĞ²é¿´
-    * */
+    /**
+     * æŸ¥è¯¢å…¨å›½æ‰€æœ‰çš„çœï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢ã€‚
+     */
     private void queryProvinces() {
         provinceList = smallWeatherDB.loadProvince();
         if(provinceList.size() > 0){
@@ -88,16 +110,16 @@ public class ChooseAreaActivity extends Activity{
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            titleText.setText("ÖĞ¹ú");
+            titleText.setText("ä¸­å›½");
             currentLevel = LEVEL_PROVINCE;
         }else{
             queryFromServer(null,"province");
         }
     }
 
-    /*
-    * ²éÑ¯ËùÓĞµÄÊĞ£¬ÓÅÏÈ´ÓÊı¾İ¿âÖĞ²é£¬Èç¹ûÃ»ÓĞ´Ó·şÎñÆ÷ÖĞ²é¿´
-    * */
+    /**
+     * æŸ¥è¯¢é€‰ä¸­çœå†…æ‰€æœ‰çš„å¸‚ï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢ã€‚
+     */
     public void queryCity(){
         cityList = smallWeatherDB.loadCity(selectedProvince.getId());
         if(cityList.size()>0){
@@ -114,9 +136,9 @@ public class ChooseAreaActivity extends Activity{
         }
     }
 
-      /*
-    * ²éÑ¯ËùÓĞµÄÏØ£¬ÓÅÏÈ´ÓÊı¾İ¿âÖĞ²é£¬Èç¹ûÃ»ÓĞ´Ó·şÎñÆ÷ÖĞ²é¿´
-    * */
+    /**
+     * æŸ¥è¯¢é€‰ä¸­å¸‚å†…æ‰€æœ‰çš„å¿ï¼Œä¼˜å…ˆä»æ•°æ®åº“æŸ¥è¯¢ï¼Œå¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°å†å»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢ã€‚
+     */
     public void queryCountry(){
         countryList = smallWeatherDB.loadCountry(selectedCity.getId());
         if(countryList.size()>0){
@@ -128,19 +150,18 @@ public class ChooseAreaActivity extends Activity{
             listView.setSelection(0);
             titleText.setText(selectedCity.getCityName());
             currentLevel = LEVEL_COUNTRY;
-
         }else{
             queryFromServer(selectedCity.getCityCode(),"country");
         }
     }
 
-    /*
-    * ¸ù¾İ´«ÈëµÄ´úºÅºÍÀàĞÍ´Ó·şÎñÆ÷ÉÏ²éÑ¯Ê¡ÊĞÏØµÄĞÅÏ¢
-    * */
+    /**
+     * æ ¹æ®ä¼ å…¥çš„ä»£å·å’Œç±»å‹ä»æœåŠ¡å™¨ä¸ŠæŸ¥è¯¢çœå¸‚å¿æ•°æ®ã€‚
+     */
     public void queryFromServer(final String code,final String type){
         String address;
         if(!TextUtils.isEmpty(code)){
-            address = "http://www.weather.com.cn/data/list3/city"+code+".xml";
+            address = "http://www.weather.com.cn/data/list3/city"+ code +".xml";
         }else{
             address = "http://www.weather.com.cn/data/list3/city.xml";
         }
@@ -158,7 +179,7 @@ public class ChooseAreaActivity extends Activity{
                 }
 
                 if(result){
-                    //Í¨¹ırunOnUiThread()·½·¨»Øµ½Ö÷Ïß³Ì´¦ÀíÂß¼­
+                    // é€šè¿‡runOnUiThread()æ–¹æ³•å›åˆ°ä¸»çº¿ç¨‹å¤„ç†é€»è¾‘
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -178,12 +199,12 @@ public class ChooseAreaActivity extends Activity{
 
             @Override
             public void onError(Exception e) {
-                //Í¨¹ırunOnUiThread()·½·¨»Øµ½Ö÷Ïß³Ì´¦ÀíÂß¼­
+                // é€šè¿‡runOnUiThread()æ–¹æ³•å›åˆ°ä¸»çº¿ç¨‹å¤„ç†é€»è¾‘
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(ChooseAreaActivity.this,"¼ÓÔØÊ§°Ü",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChooseAreaActivity.this,"åŠ è½½å¤±è´¥",Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -195,7 +216,7 @@ public class ChooseAreaActivity extends Activity{
     private void showProgressDialog() {
         if(dialog == null){
             dialog = new ProgressDialog(this);
-            dialog.setMessage("ÕıÔÚ¼ÓÔØ...");
+            dialog.setMessage("æ­£åœ¨åŠ è½½...");
             dialog.setCanceledOnTouchOutside(false);
         }
         dialog.show();
@@ -207,9 +228,9 @@ public class ChooseAreaActivity extends Activity{
         }
     }
 
-    /*
-    * ²¶»ñback¼ü£¬¸ù¾İµ±Ç°µÄ¼¶±ğ£¬À´ÅĞ¶ÏÓ¦¸Ã·µ»ØÊĞÁĞ±í£¬ÏØÁĞ±í£¬»¹ÊÇÖ±½ÓÍË³ö
-    * */
+    /**
+     * æ•è·BackæŒ‰é”®ï¼Œæ ¹æ®å½“å‰çš„çº§åˆ«æ¥åˆ¤æ–­ï¼Œæ­¤æ—¶åº”è¯¥è¿”å›å¸‚åˆ—è¡¨ã€çœåˆ—è¡¨ã€è¿˜æ˜¯ç›´æ¥é€€å‡ºã€‚
+     */
     @Override
     public void onBackPressed() {
         if(currentLevel == LEVEL_COUNTRY){
@@ -217,6 +238,10 @@ public class ChooseAreaActivity extends Activity{
         }else if(currentLevel == LEVEL_CITY){
             queryProvinces();
         }else{
+            if(isFromWeatherActivity){
+                Intent intent = new Intent(ChooseAreaActivity.this,WeahterActivity.class);
+                startActivity(intent);
+            }
             finish();
         }
     }

@@ -19,27 +19,27 @@ public class SmallWeatherDB {
     private static SmallWeatherDB smallWeatherDB;
     private SQLiteDatabase db;
 
-    /*
-    * Êı¾İ¿âÃû
-    * */
+    /**
+     * æ•°æ®åº“å
+     */
     public static final String DB_NAME = "small_weather";
 
-    /*
-    * Êı¾İ¿â°æ±¾
-    * */
+    /**
+     * æ•°æ®åº“ç‰ˆæœ¬
+     */
     public static final int VERSION = 1;
 
-    /*
-    * ½«¹¹Ôì·½·¨Ë½ÓĞ»¯
-    * */
+    /**
+     * å°†æ„é€ æ–¹æ³•ç§æœ‰åŒ–
+     */
     private SmallWeatherDB(Context context){
         SmallWeatherOpenHelper helper = new SmallWeatherOpenHelper(context,DB_NAME,null,VERSION);
         db = helper.getWritableDatabase();
     }
 
-    /*
-    * »ñÈ¡smallweatherµÄÊµÀı
-    * */
+    /**
+     * è·å–CoolWeatherDBçš„å®ä¾‹ã€‚
+     */
     public synchronized static SmallWeatherDB getInstance(Context context){
         if(smallWeatherDB ==null){
             smallWeatherDB = new SmallWeatherDB(context);
@@ -47,9 +47,9 @@ public class SmallWeatherDB {
         return smallWeatherDB;
     }
 
-    /*
-    * ½«provinceÊµÀı´æ´¢µ½Êı¾İ¿â
-    * */
+    /**
+     * å°†Provinceå®ä¾‹å­˜å‚¨åˆ°æ•°æ®åº“ã€‚
+     */
     public void saveProvince(Province province){
         if(province != null){
             ContentValues values = new ContentValues();
@@ -59,9 +59,9 @@ public class SmallWeatherDB {
         }
     }
 
-    /*
-    * ´ÓÊı¾İ¿âÖĞ¶ÁÈ¡È«¹úËùÓĞµÄÊ¡·İĞÅÏ¢
-    * */
+    /**
+     * ä»æ•°æ®åº“è¯»å–å…¨å›½æ‰€æœ‰çš„çœä»½ä¿¡æ¯ã€‚
+     */
     public List<Province> loadProvince(){
         List<Province> list = new ArrayList<Province>();
         Cursor cursor = db.query("province",null,null,null,null,null,null);
@@ -77,9 +77,9 @@ public class SmallWeatherDB {
         return list;
     }
 
-    /*
-    * ½«cityÊµÀı´æ´¢µ½Êı¾İ¿âÖĞ
-    * */
+    /**
+     * å°†Cityå®ä¾‹å­˜å‚¨åˆ°æ•°æ®åº“ã€‚
+     */
     public void saveCity(City city){
         if(city != null){
             ContentValues values = new ContentValues();
@@ -90,9 +90,10 @@ public class SmallWeatherDB {
         }
     }
 
-    /*
-    * ´ÓÊı¾İ¿âÖĞ¶ÁÈ¡Ä³Ê¡ÏÂËùÓĞ³ÇÊĞµÄĞÅÏ¢
-    * */
+
+    /**
+     * ä»æ•°æ®åº“è¯»å–æŸçœä¸‹æ‰€æœ‰çš„åŸå¸‚ä¿¡æ¯ã€‚
+     */
     public List<City> loadCity(int proviceId){
         List<City> list = new ArrayList<City>();
         Cursor cursor = db.query("city",null,"province_id = ?",new String[]{String.valueOf(proviceId)},null,null,null);
@@ -109,9 +110,9 @@ public class SmallWeatherDB {
         return list;
     }
 
-    /*
-    * ½«countryÊµÀı´æ´¢µ½Êı¾İ¿âÖĞ
-    * */
+    /**
+     * å°†Countyå®ä¾‹å­˜å‚¨åˆ°æ•°æ®åº“ã€‚
+     */
     public void saveCountry(Country country){
         if(country != null){
             ContentValues values = new ContentValues();
@@ -122,9 +123,9 @@ public class SmallWeatherDB {
         }
     }
 
-    /*
-    * ´ÓÊı¾İ¿âÖĞ¶ÁÈ¡Ä³ÊĞÏÂËùÓĞÏØ³ÇĞÅÏ¢
-    * */
+    /**
+     * ä»æ•°æ®åº“è¯»å–æŸåŸå¸‚ä¸‹æ‰€æœ‰çš„å¿ä¿¡æ¯ã€‚
+     */
     public List<Country> loadCountry(int cityId){
         List<Country> list = new ArrayList<Country>();
         Cursor cursor = db.query("country",null,"city_id = ?",new String[]{String.valueOf(cityId)},null,null,null);

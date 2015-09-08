@@ -22,9 +22,9 @@ import java.util.Locale;
  */
 public class Utility {
 
-    /*
-    * ½âÎöºÍ´¦Àí·şÎñÆ÷·µ»ØµÄÊ¡¼¶Êı¾İ
-    * */
+    /**
+     * è§£æå’Œå¤„ç†æœåŠ¡å™¨è¿”å›çš„çœçº§æ•°æ®
+     */
     public synchronized static boolean handleProvincesResponse(SmallWeatherDB smallWeatherDB,String response){
        if(!TextUtils.isEmpty(response)){
            String [] allProvince = response.split(",");
@@ -34,7 +34,7 @@ public class Utility {
                    Province province = new Province();
                    province.setProviceCode(array[0]);
                    province.setProviceName(array[1]);
-                   //½«½âÎö³öÀ´µÄÊı¾İ´æ´¢µ½province±íÖĞ
+                   // å°†è§£æå‡ºæ¥çš„æ•°æ®å­˜å‚¨åˆ°Provinceè¡¨
                    smallWeatherDB.saveProvince(province);
                }
                return true;
@@ -44,9 +44,9 @@ public class Utility {
         return false;
     }
 
-    /*
-    * ½âÎöºÍ´¦Àí·şÎñÆ÷·µ»ØµÄÊĞ¼¶Êı¾İ
-    * */
+    /**
+     * è§£æå’Œå¤„ç†æœåŠ¡å™¨è¿”å›çš„å¸‚çº§æ•°æ®
+     */
     public static boolean handleCityResponse(SmallWeatherDB smallWeatherDB,String response,int provinceId){
         if(!TextUtils.isEmpty(response)){
             String [] allCities = response.split(",");
@@ -57,6 +57,7 @@ public class Utility {
                     city.setCityCode(array[0]);
                     city.setCityName(array[1]);
                     city.setProvinceId(provinceId);
+                    // å°†è§£æå‡ºæ¥çš„æ•°æ®å­˜å‚¨åˆ°Cityè¡¨
                     smallWeatherDB.saveCity(city);
                 }
                 return true;
@@ -66,9 +67,9 @@ public class Utility {
         return false;
     }
 
-    /*
-    * ½âÎöºÍ´¦Àí·şÎñÆ÷·µ»ØµÄÏØ¼¶Êı¾İ
-    * */
+    /**
+     * è§£æå’Œå¤„ç†æœåŠ¡å™¨è¿”å›çš„å¿çº§æ•°æ®
+     */
     public static boolean handleCountryResponse(SmallWeatherDB smallWeatherDB,String response,int cityId){
         if(!TextUtils.isEmpty(response)){
             String [] allCountries = response.split(",");
@@ -89,9 +90,9 @@ public class Utility {
         return false;
     }
 
-    /*
-    * ½âÎö·şÎñÆ÷·µ»ØµÄJSONÊı¾İ£¬²¢½«Êı¾İ±£´æµ½±¾µØ
-    * */
+    /**
+     * è§£ææœåŠ¡å™¨è¿”å›çš„JSONæ•°æ®ï¼Œå¹¶å°†è§£æå‡ºçš„æ•°æ®å­˜å‚¨åˆ°æœ¬åœ°ã€‚
+     */
     public static void handleWeatherResponse(Context context,String response){
         try {
             JSONObject jsonObject = new JSONObject(response);
@@ -108,11 +109,11 @@ public class Utility {
         }
     }
 
-    /*
-    * ½«·şÎñÆ÷·µ»ØµÄËùÓĞÌìÆøĞÅÏ¢´æ´¢µ½SharedPerferenceÖĞ
-    * */
+    /**
+     * å°†æœåŠ¡å™¨è¿”å›çš„æ‰€æœ‰å¤©æ°”ä¿¡æ¯å­˜å‚¨åˆ°SharedPreferencesæ–‡ä»¶ä¸­ã€‚
+     */
     public static void saveWeatherInfo(Context context,String cityName,String weatherCode,String temp1,String temp2,String weatherDesp,String publishTime){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyÄêmÔÂdÈÕ", Locale.CHINA);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyå¹´Mæœˆdæ—¥", Locale.CHINA);
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("city_selected",true);
         editor.putString("city_name", cityName);
@@ -121,7 +122,7 @@ public class Utility {
         editor.putString("temp2", temp2);
         editor.putString("weather_desp", weatherDesp);
         editor.putString("publish_time",publishTime);
-        editor.putString("current_time",sdf.format(new Date()));
+        editor.putString("current_date",sdf.format(new Date()));
         editor.commit();
     }
 

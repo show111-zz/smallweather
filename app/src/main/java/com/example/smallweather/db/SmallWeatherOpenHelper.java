@@ -8,19 +8,19 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by lhf on 2015/9/6.
  */
 public class SmallWeatherOpenHelper extends SQLiteOpenHelper{
-    /*
-    * province ±ÌΩ®±Ì”Ôæ‰
-    * */
+    /**
+     *  ProvinceË°®Âª∫Ë°®ËØ≠Âè•
+     */
     public static final String CREATE_PROVINCE = "create table province(id integer primary key autoIncrement,province_code text,province_name text)";
 
-    /*
-    * city±ÌΩ®±Ì”Ôæ‰
-    * */
+    /**
+     *  cityË°®Âª∫Ë°®ËØ≠Âè•
+     */
     public static final String CREATE_CITY = "create table city(id integer primary key autoincrement,city_code text,city_name text,province_id integer)";
 
-    /*
-    * country±ÌΩ®±Ì”Ôæ‰
-    * */
+    /**
+     *  countryË°®Âª∫Ë°®ËØ≠Âè•
+    */
     public static final String CREATE_COUNTRY = "create table country(id integer primary key autoincrement,country_code text,country_name text,city_id integer)";
 
 
