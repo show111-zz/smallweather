@@ -64,7 +64,7 @@ public class ChooseAreaActivity extends Activity{
         isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity",false);
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(prefs.getBoolean("city_selected",false)&&!isFromWeatherActivity){
-            Intent intent = new Intent(this,WeahterActivity.class);
+            Intent intent = new Intent(this,WeatherActivity.class);
             startActivity(intent);
             finish();
             return;
@@ -88,7 +88,7 @@ public class ChooseAreaActivity extends Activity{
                     queryCountry();
                 }else if(currentLevel == LEVEL_COUNTRY){
                     String countryCode = countryList.get(i).getCountryCode();
-                    Intent intent = new Intent(ChooseAreaActivity.this,WeahterActivity.class);
+                    Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
                     intent.putExtra("country_code",countryCode);
                     startActivity(intent);
                     finish();
@@ -239,7 +239,7 @@ public class ChooseAreaActivity extends Activity{
             queryProvinces();
         }else{
             if(isFromWeatherActivity){
-                Intent intent = new Intent(ChooseAreaActivity.this,WeahterActivity.class);
+                Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
                 startActivity(intent);
             }
             finish();

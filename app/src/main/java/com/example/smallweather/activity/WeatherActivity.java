@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -14,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.smallweather.R;
+import com.example.smallweather.service.AutoUpdateService;
 import com.example.smallweather.util.HttpCallbackListener;
 import com.example.smallweather.util.HttpUtil;
 import com.example.smallweather.util.Utility;
@@ -21,7 +21,7 @@ import com.example.smallweather.util.Utility;
 /**
  * Created by lhf on 2015/9/7.
  */
-public class WeahterActivity extends Activity implements View.OnClickListener{
+public class WeatherActivity extends Activity implements View.OnClickListener{
 
     private LinearLayout weatherInfoLayout;
     private TextView cityNameText;
@@ -79,8 +79,8 @@ public class WeahterActivity extends Activity implements View.OnClickListener{
         temp2Text.setText(prefs.getString("temp2", ""));
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
-//        Intent intent = new Intent(this,AutoUpdateService.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 
     /**
@@ -103,7 +103,7 @@ public class WeahterActivity extends Activity implements View.OnClickListener{
     public void onClick(View view) {
         switch(view.getId()){
             case R.id.switch_city:
-                Intent intent = new Intent(WeahterActivity.this,ChooseAreaActivity.class);
+                Intent intent = new Intent(WeatherActivity.this,ChooseAreaActivity.class);
                 intent.putExtra("from_weather_activity",true);
                 startActivity(intent);
                 finish();
@@ -140,7 +140,7 @@ public class WeahterActivity extends Activity implements View.OnClickListener{
                     }
                 }else if("weatherCode".equals(type)){
                     // 处理服务器返回的天气信息
-                    Utility.handleWeatherResponse(WeahterActivity.this,response);
+                    Utility.handleWeatherResponse(WeatherActivity.this,response);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
